@@ -1,7 +1,7 @@
 // Version.h
 
-#ifndef _PPBOX_JNI_VERSION_H_
-#define _PPBOX_JNI_VERSION_H_
+#ifndef _PLUGINS_JNI_VERSION_H_
+#define _PLUGINS_JNI_VERSION_H_
 
 #include "plugins/jni/Define.h"
 
@@ -9,4 +9,4 @@
 
 #include <framework/Version.h>
 
-#endif // _PPBOX_JNI_VERSION_H_
+#endif // _PLUGINS_JNI_VERSION_H_
