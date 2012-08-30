@@ -16,7 +16,7 @@ PROJECT_VERSION			:=
 
 ## 项目版本定义文件
 
-PROJECT_VERSION_HEADER		:= ppbox/jni/Define.h
+PROJECT_VERSION_HEADER		:= plugins/jni/Define.h
 
 ## 指定源文件目录（该项目源文件的总目录，相对于源文件根目录ROOT_SOURCE_DIRECTORY，默认为LOCAL_NAME）
 
@@ -36,7 +36,7 @@ PROJECT_HEADER_DIRECTORY	:= .
 
 ## 项目预编译头文件
 
-PROJECT_COMMON_HEADERS  	:= ppbox/jni/Common.h
+PROJECT_COMMON_HEADERS  	:= plugins/jni/Common.h
 
 ## 额外包含目录（多个，相对于包含根目录ROOT_INCLUDE_DIRECTORY）
 
@@ -44,7 +44,7 @@ PROJECT_EXTERNAL_INCLUDES	:=
 
 ## 该项目特点的编译选项
 
-PROJECT_COMPILE_FLAGS		:= $(PROJECT_COMPILE_FLAGS)
+PROJECT_COMPILE_FLAGS		:= $(PROJECT_COMPILE_FLAGS) -I$(PLATFORM_BUILD_DIRECTORY)
 
 ## 该项目特点的链接选项
 
@@ -61,3 +61,6 @@ PROJECT_DEPENDS			:= \
 PROJECT_DEPEND_LIBRARYS		:= $(PROJECT_DEPEND_LIBRARYS) $(if $(filter -DANDROID,$(PLATFORM_COMPILE_FLAGS)),log)
 
 PROJECT_VERSION_SCRIPT		:= PpboxJni.map
+
+$(shell $(MAKE) SOURCE_DIRECTORY=$(ROOT_SOURCE_DIRECTORY)$(LOCAL_NAME) -f $(ROOT_PROJECT_DIRECTORY)$(LOCAL_NAME)/JavaMake.mk 2>&1 > /dev/null)
+

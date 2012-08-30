@@ -7,16 +7,18 @@
 #include <ppbox/ppbox/IDownloader.h>
 #include <ppbox/ppbox/Name.h>
 
-#undef JNIEXPORT
-#define JNIEXPORT __attribute__ ((visibility("default")))
-
 #ifdef __ANDROID__
 #  include <android/log.h>
 #endif
 #include <jni.h>
 #include <dlfcn.h>
 
+#undef JNIEXPORT
+#define JNIEXPORT __attribute__ ((visibility("default")))
+
 #include "plugins/jni/MediaSDK.h"
+
+#define PPBOX_LIBNAME ppbox::name_string() 
 
 extern "C" {
 
@@ -47,11 +49,10 @@ JNI_PPBOX_GetDownloadInfo J_PPBOX_GetDownloadInfo = NULL;
 #ifdef __ANDROID__
 #  define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG  , "P2PENGINE_TEST",__VA_ARGS__)
 #else
-#  define LOGD(...) printf(__VA_ARGS__)
+#  define LOGD(...) printf(__VA_ARGS__); printf("\n")
 #endif
 
 
-    bool canStop = false;
     bool init_done = false;
  
     void Ppbox_OnLogDump( char const * log, long level){
@@ -83,8 +84,7 @@ JNI_PPBOX_GetDownloadInfo J_PPBOX_GetDownloadInfo = NULL;
         return rtn;
     }
 
-#define PPBOX_LIBNAME ppbox::name_string() 
-
+/*
     JNIEXPORT jint JNICALL JNI_OnLoad(
         JavaVM *vm, void *reserved)
     {
@@ -95,43 +95,69 @@ JNI_PPBOX_GetDownloadInfo J_PPBOX_GetDownloadInfo = NULL;
             LOGD("ERROR: GetEnv failed\n"); 
             return JNI_ERR;
         } 
+    }
 
-        jfieldID lib_path = env->GetStaticFieldID(thiz, "libPath", "Ljava/lang/String;");
-        jfieldID log_path = env->GetStaticFieldID(thiz, "logPath", "Ljava/lang/String;");
-        jfieldID logopen = env->GetStaticFieldID(thiz, "logOn", "Z");
-        jfieldID loglevel = env->GetStaticFieldID(thiz, "logLevel", "I");
-        
-        jstring libpa = (jstring)(env->GetStaticObjectField(thiz, lib_path));
-        jstring logpa = (jstring)(env->GetStaticObjectField(thiz, log_path));
-        bool log_on = env->GetStaticBooleanField(thiz, logopen);
-        int log_level = env->GetStaticIntField(thiz, loglevel);
-        
-        char strEnv[1024] = {0};
-        char *logpath = js2c(env,logpa);
-        LOGD("TMPDIR=%s", strEnv);
-        setenv("TMPDIR", logpath, 1);
+    JNIEXPORT void JNICALL JNI_OnUnload(
+        JavaVM *vm, void *reserved)
+    {
+        LOGD("JNI_OnUnload");
 
+        if (J_PPBOX_LogDump != NULL){
+            J_PPBOX_LogDump(NULL, 0);
+        }
+
+        if (handle)
+            dlclose(handle);
+
+        LOGD("JNI_OnLoad finish!");
+    }
+*/
+
+    int MediaSDK_init(
+        JNIEnv *env, jclass thiz)
+    {
+        if (init_done) {
+            LOGD("init already done!");
+            return -1;
+        }
+
+        LOGD("init!");
+        jfieldID f_lib_path = env->GetStaticFieldID(thiz, "libPath", "Ljava/lang/String;");
+        jfieldID f_log_path = env->GetStaticFieldID(thiz, "logPath", "Ljava/lang/String;");
+        jfieldID f_log_on = env->GetStaticFieldID(thiz, "logOn", "Z");
+        jfieldID f_log_level = env->GetStaticFieldID(thiz, "logLevel", "I");
+        
+        jstring js_lib_path = (jstring)(env->GetStaticObjectField(thiz, f_lib_path));
+        jstring js_log_path = (jstring)(env->GetStaticObjectField(thiz, f_log_path));
+        bool log_on = env->GetStaticBooleanField(thiz, f_log_on);
+        int log_level = env->GetStaticIntField(thiz, f_log_level);
+        
         char * pwd = getenv("PWD");
         LOGD("PWD=%s", pwd);
-        char* libPath = js2c(env,libpa);
-        char * libraryPath = getenv("LD_LIBRARY_PATH");
-        if (libraryPath == NULL || strstr(libraryPath,libPath) == NULL){
-            char strlibpathEnv[1024] = {0};
-            strncat(strlibpathEnv,libPath,1024);
-            strncat(strlibpathEnv,":",1024);
-            if (libraryPath)
-                strncat(strlibpathEnv,libraryPath,1024);
-            LOGD("LD_LIBRARY_PATH=%s", strlibpathEnv);
-            setenv("LD_LIBRARY_PATH", strlibpathEnv, 1);
+
+        char *log_path = js2c(env,js_log_path);
+        LOGD("TMPDIR=%s", log_path);
+        setenv("TMPDIR", log_path, 1);
+
+        char* lib_path = js2c(env,js_lib_path);
+        char * lib_path_old = getenv("LD_LIBRARY_PATH");
+        if (lib_path_old == NULL || strstr(lib_path_old, lib_path) == NULL){
+            char str_lib_path[1024] = {0};
+            strncat(str_lib_path, lib_path, 1024);
+            strncat(str_lib_path, ":", 1024);
+            if (lib_path_old)
+                strncat(str_lib_path, lib_path_old, 1024);
+            LOGD("LD_LIBRARY_PATH=%s", str_lib_path);
+            setenv("LD_LIBRARY_PATH", str_lib_path, 1);
         } else {
-            LOGD("LD_LIBRARY_PATH=%s", libraryPath);
+            LOGD("LD_LIBRARY_PATH=%s", lib_path_old);
         }
 
         handle = dlopen(PPBOX_LIBNAME ,RTLD_LAZY);
         if (handle == NULL) {
             LOGD("dlopen: %s", dlerror());
             char strlib[1024] = {0};
-            strncat(strlib, libPath, 1024);
+            strncat(strlib, lib_path, 1024);
             strncat(strlib, "/", 1024);
             strncat(strlib, PPBOX_LIBNAME, 1024);
             handle = dlopen(strlib, RTLD_LAZY);
@@ -167,31 +193,18 @@ JNI_PPBOX_GetDownloadInfo J_PPBOX_GetDownloadInfo = NULL;
             J_PPBOX_LogDump(&Ppbox_OnLogDump, log_level);
         }
 
-        if (libPath != NULL){
-            free(libPath);
+        if (lib_path != NULL){
+            free(lib_path);
         }
-        if (logpath != NULL){
-            free(logpath);
-        }
-
-        LOGD("JNI_OnLoad finish!");
-
-        return JNI_VERSION_1_4;
-    }
-
-    JNIEXPORT void JNICALL JNI_OnUnload(
-        JavaVM *vm, void *reserved)
-    {
-        LOGD("JNI_OnUnload");
-
-        if (J_PPBOX_LogDump != NULL){
-            J_PPBOX_LogDump(NULL, 0);
+        if (log_path != NULL){
+            free(log_path);
         }
 
-        if (handle)
-            dlclose(handle);
+        init_done = true;
 
-        LOGD("JNI_OnLoad finish!");
+        LOGD("init finish!");
+
+        return 0;
     }
 
     JNIEXPORT jlong JNICALL Java_com_pplive_sdk_MediaSDK_startP2PEngine (
@@ -221,21 +234,22 @@ JNI_PPBOX_GetDownloadInfo J_PPBOX_GetDownloadInfo = NULL;
             free(pauth);
         }
         LOGD("PPBOX_StartP2PEngine ! finish %ld", ret);
-        canStop = true;
         return ret;
     }
 
     JNIEXPORT jlong JNICALL Java_com_pplive_sdk_MediaSDK_stopP2PEngine(
         JNIEnv *env, jclass thiz)
     {
-        if (!canStop){
-            return 0;
-        }
         LOGD("PPBOX_stopP2PEngine !");
         if (NULL == J_PPBOX_StopP2PEngine) {
             return -1;
         }
         J_PPBOX_StopP2PEngine();
+
+        if (J_PPBOX_LogDump) {
+            J_PPBOX_LogDump(&Ppbox_OnLogDump, 0);
+        }
+
         LOGD("PPBOX_stopP2PEngine ! finish");
         return 0;
     }
