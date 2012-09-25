@@ -1,6 +1,6 @@
 ## 该项目默认的配置类型
 
-LOCAL_CONFIG			:= $(LOCAL_CONFIG) dynamic debug multi --enable-build_version --combine_static_lib=yes --publish=private:public
+LOCAL_CONFIG			:= $(LOCAL_CONFIG) dynamic debug multi --enable-build_version --publish=private:public
 
 ## 项目类型
 
