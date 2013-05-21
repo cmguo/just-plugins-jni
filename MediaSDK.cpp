@@ -165,29 +165,6 @@ JNI_PPBOX_GetDownloadInfo J_PPBOX_GetDownloadInfo = NULL;
                 LOGD("dlopen: %s", dlerror());
             }
         }
-
-        J_PPBOX_LogDump = (JNI_PPBOX_LogDump)dlsym(handle ,"PPBOX_LogDump");
-        
-        J_PPBOX_StartP2PEngine = (JNI_PPBOX_StartP2PEngine)dlsym(handle ,"PPBOX_StartP2PEngine");
-        if (NULL == J_PPBOX_StartP2PEngine) {
-            LOGD("PPBOX_StartP2PEngine not exist!");
-        }
-        J_PPBOX_StopP2PEngine = (JNI_PPBOX_StopP2PEngine)dlsym(handle ,"PPBOX_StopP2PEngine");
-        if (NULL == J_PPBOX_StopP2PEngine) {
-            LOGD("PPBOX_StopP2PEngine not exist!");
-        }
-        J_PPBOX_DownloadOpen = (JNI_PPBOX_DownloadOpen)dlsym(handle, "PPBOX_DownloadOpen");
-        if (NULL == J_PPBOX_DownloadOpen) {
-            LOGD("PPBOX_DownloadOpen not exist!");
-        }
-        J_PPBOX_DownloadClose = (JNI_PPBOX_DownloadClose)dlsym(handle, "PPBOX_DownloadClose");
-        if (NULL == J_PPBOX_DownloadClose) {
-            LOGD("PPBOX_DownloadClose not exist!");
-        }
-        J_PPBOX_GetDownloadInfo = (JNI_PPBOX_GetDownloadInfo)dlsym(handle, "PPBOX_GetDownloadInfo");
-        if (NULL == J_PPBOX_GetDownloadInfo) {
-            LOGD("PPBOX_GetDownloadInfo not exist!");
-        }
         
         if (J_PPBOX_LogDump && log_on) {
             J_PPBOX_LogDump(&Ppbox_OnLogDump, log_level);
