@@ -1,0 +1,41 @@
+;===========================================================================
+;  Copyright (c) 1992-2002  Microsoft Corporation.  All Rights Reserved.
+;===========================================================================
+
+EXPORTS
+	JNI_OnLoad                                                   PRIVATE
+	JNI_OnUnload                                                 PRIVATE
+	Java_com_pplive_sdk_PPBOX_AsyncOpen                 PRIVATE
+	Java_com_pplive_sdk_PPBOX_AsyncOpenEx               PRIVATE
+	Java_com_pplive_sdk_PPBOX_CancelCallback            PRIVATE
+	Java_com_pplive_sdk_PPBOX_CaptureCreate             PRIVATE
+	Java_com_pplive_sdk_PPBOX_CaptureDestroy            PRIVATE
+	Java_com_pplive_sdk_PPBOX_CapturePutSample          PRIVATE
+	Java_com_pplive_sdk_PPBOX_CaptureSetStream          PRIVATE
+	Java_com_pplive_sdk_PPBOX_Close                     PRIVATE
+	Java_com_pplive_sdk_PPBOX_DebugMode                 PRIVATE
+	Java_com_pplive_sdk_PPBOX_DialogMessage             PRIVATE
+	Java_com_pplive_sdk_PPBOX_DownloadClose             PRIVATE
+	Java_com_pplive_sdk_PPBOX_DownloadOpen              PRIVATE
+	Java_com_pplive_sdk_PPBOX_GetDownloadInfo           PRIVATE
+	Java_com_pplive_sdk_PPBOX_GetDuration               PRIVATE
+	Java_com_pplive_sdk_PPBOX_GetLastError              PRIVATE
+	Java_com_pplive_sdk_PPBOX_GetLastErrorMsg           PRIVATE
+	Java_com_pplive_sdk_PPBOX_GetStreamCount            PRIVATE
+	Java_com_pplive_sdk_PPBOX_GetStreamInfo             PRIVATE
+	Java_com_pplive_sdk_PPBOX_GetVersion                PRIVATE
+	Java_com_pplive_sdk_PPBOX_LogDump                   PRIVATE
+	Java_com_pplive_sdk_PPBOX_Open                      PRIVATE
+	Java_com_pplive_sdk_PPBOX_OpenEx                    PRIVATE
+	Java_com_pplive_sdk_PPBOX_Pause                     PRIVATE
+	Java_com_pplive_sdk_PPBOX_ReadSample                PRIVATE
+	Java_com_pplive_sdk_PPBOX_RedirectCallback          PRIVATE
+	Java_com_pplive_sdk_PPBOX_ScheduleCallback          PRIVATE
+	Java_com_pplive_sdk_PPBOX_Seek                      PRIVATE
+	Java_com_pplive_sdk_PPBOX_SetConfig                 PRIVATE
+	Java_com_pplive_sdk_PPBOX_SetDownloadBufferSize     PRIVATE
+	Java_com_pplive_sdk_PPBOX_SetPlayBufferTime         PRIVATE
+	Java_com_pplive_sdk_PPBOX_StartP2PEngine            PRIVATE
+	Java_com_pplive_sdk_PPBOX_StopP2PEngine             PRIVATE
+	Java_com_pplive_sdk_PPBOX_SubmitMessage             PRIVATE
+
