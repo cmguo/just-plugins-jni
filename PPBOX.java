@@ -59,9 +59,9 @@ public class PPBOX
         return 0;
     }
 
-    public native static long StartP2PEngine(String gid, String pid, String auth);
+    public native static long StartEngine(String gid, String pid, String auth);
 
-    public native static long StopP2PEngine();
+    public native static long StopEngine();
 
     public native static long DownloadOpen(String playlink, String format, String save_filename, Field callback);
 
@@ -72,7 +72,7 @@ public class PPBOX
     public static void main(String[] argv)
     {
     	load();
-        StartP2PEngine(argv[0], argv[1], argv[2]);
-        StopP2PEngine();
+        StartEngine(argv[0], argv[1], argv[2]);
+        StopEngine();
     }
 }

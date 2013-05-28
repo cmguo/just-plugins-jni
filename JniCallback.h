@@ -142,10 +142,12 @@ struct JniCallback
     : _JniCallback<typename FuncResult<F>::result_t>
 {
 public:
+    typedef _JniCallback<typename FuncResult<F>::result_t> super_t;
+
     JniCallback(
          JNIEnv * env, 
          jobject method)
-         : _JniCallback(env, method)
+         : super_t(env, method)
     {
     }
 };
@@ -164,6 +166,19 @@ struct Value<JniCallback<F>, F>
         j_tag_t * = NULL)
         : callback_(new JniCallback<F>(env, j))
     {
+    }
+
+    Value(
+        JNIEnv * env, 
+        ctype_t c, 
+        c_tag_t *)
+        : callback_(NULL)
+    {
+    }
+
+    jtype_t jvalue() const
+    {
+        return (jtype_t)callback_;
     }
 
     ctype_t cvalue() const

@@ -39,7 +39,7 @@ struct JBoolean
         jmethodID method, 
         va_list args)
     {
-        env->CallStaticBooleanMethodV(_class, method, args);
+        return env->CallStaticBooleanMethodV(_class, method, args);
     }
 
     static jtype_t get_static(

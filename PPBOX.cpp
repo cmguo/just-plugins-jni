@@ -4,6 +4,7 @@
 #include "plugins/jni/PPBOX.h"
 #include "plugins/jni/JniStruct.h"
 #include "plugins/jni/JniClass.h"
+#include "plugins/jni/Version.h"
 
 #define PPBOX_JNI_PREFIX_ Java_com_pplive_sdk_
 #define PPBOX_DISABLE_AUTO_START
@@ -18,9 +19,6 @@
 
 #ifdef WIN32
 #  define setenv(n, v, f) SetEnvironmentVariableA(n ,v)
-#  define getenv(n, v) (GetEnvironmentVariableA(n ,v, sizeof(v)), v)
-#else
-#  define getenv(n, v) (getenv)(n)
 #endif
 
 #include "plugins/ppbox/ppbox_runtime.h"
@@ -80,7 +78,7 @@ extern "C" JNIEXPORT jint JNICALL JNI_OnLoad(
     if (logOn) {
         LOG(3, "logOn = %s", logOn ? "true" : "false");
         long logLevel = clsMediaSdk.static_field_cvalue<JInt>("logLevel");
-        LOG(3, "logLevel = %d", logLevel);
+        LOG(3, "logLevel = %ld", logLevel);
         PPBOX_LogDump(Ppbox_OnLogDump, logLevel);
     }
 

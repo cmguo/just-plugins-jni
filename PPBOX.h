@@ -1,5 +1,6 @@
 // PpboxJni.h
 
+#include "plugins/jni/JniTypes.h"
 #include "plugins/jni/JniValue.h"
 #include "plugins/jni/JniStruct.h"
 #include "plugins/jni/JniCallback.h"
@@ -51,10 +52,6 @@
         PARAMS_LOCAL_VARIABLE(np, params); \
         return CValue<type>::value_t(env, name(PARAMS_LOCAL_VALUE(np, params)), c_tag).jvalue(); \
     } \
-
-//#define PPBOX_CALLBACK(type, name, np, params) \
-//    typedef type (* FT_ ## name)(PARAMS_TYPE(np, params)); \
-//    typedef ctype<type>::jtype (* FT_ ## name)(PARAMS_JNI_TYPE(np, params));
 
 #define PPBOX_STRUCT(name, nf, fields) \
     struct name { FIELDS_TYPE_NAME(nf, fields) }; \

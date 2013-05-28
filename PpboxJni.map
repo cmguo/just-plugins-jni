@@ -1,7 +1,7 @@
 {
 	global: 
-		Java_com_pplive_sdk_MediaSDK_startP2PEngine;
-		Java_com_pplive_sdk_MediaSDK_stopP2PEngine;
+		Java_com_pplive_sdk_MediaSDK_startEngine;
+		Java_com_pplive_sdk_MediaSDK_stopEngine;
 		Java_com_pplive_sdk_MediaSDK_fileDownloadOpenItem;
 		Java_com_pplive_sdk_MediaSDK_fileDownloadCloseItem;
 		Java_com_pplive_sdk_MediaSDK_getFileDownloadItemInfo;		

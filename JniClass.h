@@ -116,7 +116,7 @@ public:
     JniStaticField<T, typename typej2c<T>::ctype> static_field(
         char const * name)
     {
-        return JniStaticField<T, typename jtype<T>::ctype>(env_, class_, name);
+        return JniStaticField<T, typename typej2c<T>::ctype>(env_, class_, name);
     }
 
     template <
@@ -134,7 +134,7 @@ public:
     typename Value<T, typename typej2c<T>::ctype>::jtype_t static_field_jvalue(
         char const * name)
     {
-        return JniStaticField<T, typename jtype<T>::ctype>(env_, class_, name).value().jvalue();
+        return JniStaticField<T, typename typej2c<T>::ctype>(env_, class_, name).value().jvalue();
     }
 
     template <

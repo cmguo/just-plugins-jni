@@ -35,7 +35,7 @@ EXPORTS
 	Java_com_pplive_sdk_PPBOX_SetConfig                 PRIVATE
 	Java_com_pplive_sdk_PPBOX_SetDownloadBufferSize     PRIVATE
 	Java_com_pplive_sdk_PPBOX_SetPlayBufferTime         PRIVATE
-	Java_com_pplive_sdk_PPBOX_StartP2PEngine            PRIVATE
-	Java_com_pplive_sdk_PPBOX_StopP2PEngine             PRIVATE
+	Java_com_pplive_sdk_PPBOX_StartEngine            PRIVATE
+	Java_com_pplive_sdk_PPBOX_StopEngine             PRIVATE
 	Java_com_pplive_sdk_PPBOX_SubmitMessage             PRIVATE
 
