@@ -9,7 +9,7 @@ struct JVoid
 {
     typedef void jtype_t;
 
-    const char * sig()
+    static const char * sig()
     {
         return "V";
     }
@@ -21,6 +21,15 @@ struct JVoid
         va_list args)
     {
         env->CallStaticVoidMethodV(_class, method, args);
+    }
+
+    static void call(
+        JNIEnv * env, 
+        jobject obj, 
+        jmethodID method, 
+        va_list args)
+    {
+        env->CallVoidMethodV(obj, method, args);
     }
 };
 
@@ -40,6 +49,15 @@ struct JBoolean
         va_list args)
     {
         return env->CallStaticBooleanMethodV(_class, method, args);
+    }
+
+    static jtype_t call(
+        JNIEnv * env, 
+        jobject obj, 
+        jmethodID method, 
+        va_list args)
+    {
+        return env->CallBooleanMethodV(obj, method, args);
     }
 
     static jtype_t get_static(
@@ -348,84 +366,14 @@ struct JObject
     }
 };
 
-struct JString
-{
-    typedef jstring jtype_t;
-
-    static const char * sig()
-    {
-        return "Ljava/lang/String;";
-    }
-
-    static jtype_t get_static(
-        JNIEnv * env, 
-        jclass _class, 
-        jfieldID field)
-    {
-        return static_cast<jtype_t>(env->GetStaticObjectField(_class, field));
-    }
-
-    static jtype_t get(
-        JNIEnv * env, 
-        jobject obj, 
-        jfieldID field)
-    {
-        return static_cast<jtype_t>(env->GetObjectField(obj, field));
-    }
-
-    static void set(
-        JNIEnv * env, 
-        jobject obj, 
-        jfieldID field, 
-        jtype_t value)
-    {
-        return env->SetObjectField(obj, field, value);
-    }
-};
-
-struct JByteArray
-{
-    typedef jbyteArray jtype_t;
-
-    static const char * sig()
-    {
-        return "Ljava/lang/String;";
-    }
-
-    static jtype_t get_static(
-        JNIEnv * env, 
-        jclass _class, 
-        jfieldID field)
-    {
-        return static_cast<jtype_t>(env->GetStaticObjectField(_class, field));
-    }
-
-    static jtype_t get(
-        JNIEnv * env, 
-        jobject obj, 
-        jfieldID field)
-    {
-        return static_cast<jtype_t>(env->GetObjectField(obj, field));
-    }
-
-    static void set(
-        JNIEnv * env, 
-        jobject obj, 
-        jfieldID field, 
-        jtype_t value)
-    {
-        return env->SetObjectField(obj, field, value);
-    }
-};
-
-
 template <typename T>
 struct JUnsigned
     : T
 {
 };
 
-struct JHandle
+template <typename T>
+struct JPointer
     : JLong
 {
 };

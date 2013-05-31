@@ -4,6 +4,9 @@
 #include "plugins/jni/JniValue.h"
 #include "plugins/jni/JniStruct.h"
 #include "plugins/jni/JniCallback.h"
+#include "plugins/jni/JString.h"
+#include "plugins/jni/JByteArray.h"
+#include "plugins/jni/JVargList.h"
 
 #include <boost/preprocessor/cat.hpp>
 #include <boost/preprocessor/stringize.hpp>
@@ -39,7 +42,7 @@
         if (fp == NULL) { \
             fp = (FT_ ## name)dlsym(PPBOX_Load(), #name); \
             if (fp == NULL) { \
-                PPBOX_FUNC_NOT_EXIST(name); \
+                PPBOX_FUNCTION_NOT_EXIST(name); \
                 return type##_defalut(); \
             } \
         } \
@@ -68,7 +71,32 @@
     BIND_STRUCT_TYPE(name *) \
     BIND_STRUCT_TYPE(name const *)
 
+#define VA_ARG_SIG(i, t) \
+    strncat(str, typec2j<t>::jtype::sig(), sizeof(str)); \
+    strncat(str, ";", sizeof(str));
+#define VA_ARGS_SIG(np, params) LIST_FORMAT(VA_ARG_SIG, np, params)
+
+#define VA_ARG_TO_JNI(i, t) \
+    , CValue<t>::value_t(env_, va_arg(args, t), c_tag).jvalue()
+#define VA_ARGS_TO_JNI(np, params) LIST_FORMAT(VA_ARG_TO_JNI, np, params)
 
 #define PPBOX_CALLBACK(type, name, np, params) \
     typedef type (*name)params; \
-    BIND_CALLBACK_TYPE(name)
+    BIND_CALLBACK_TYPE(name) \
+    template <> \
+    char const * JniCallback<name>::sig() \
+    { \
+        static char str[1024] = {0}; \
+        if (str[0] == 0) { \
+            strncat(str, "(", sizeof(str)); \
+            VA_ARGS_SIG(np, params); \
+            strncat(str, ")", sizeof(str)); \
+            strncat(str, typec2j<type>::jtype::sig(), sizeof(str)); \
+        } \
+        return str; \
+    } \
+    template <> \
+    void JniCallback<name>::invoke(void * result, va_list args) const \
+    { \
+        invoke2((type *)result VA_ARGS_TO_JNI(np, params)); \
+    }

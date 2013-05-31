@@ -19,12 +19,28 @@ struct Value<JStruct<T *>, T *>
 
     Value(
         JNIEnv * env, 
-        jobject obj)
+        jobject obj, 
+        j_tag_t * = NULL)
         : env_(env)
         , obj_(obj)
     {
         memset(&struct_, 0, sizeof(T));
         from_jni(env_, obj_, struct_);
+    }
+
+    Value(
+        JNIEnv * env, 
+        T * c, 
+        c_tag_t *)
+        : env_(env)
+        , obj_(NULL)
+    {
+        memset(&struct_, 0, sizeof(T));
+    }
+
+    jtype_t jvalue()
+    {
+        return obj_;
     }
 
     ctype_t cvalue()

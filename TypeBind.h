@@ -39,9 +39,8 @@ BIND_TYPE(JUInt, boost::uint32_t)
 BIND_TYPE(JULong, boost::uint64_t)
 BIND_TYPE(JFloat, float)
 BIND_TYPE(JDouble, double)
-BIND_TYPE(JString, char const *)
-BIND_TYPE(JByteArray, unsigned char const *)
 
-BIND_TYPE(JHandle, void const *)
+BIND_TYPE(JPointer<void *>, void *)
+BIND_TYPE(JPointer<void const *>, void const *)
 
 #endif // _PLUGINS_JNI_TYPE_BIND_H_

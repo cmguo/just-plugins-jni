@@ -38,7 +38,7 @@ static void ppbox_redirect_callback(
     va_list args)
 {
     __JniCallback * c = (__JniCallback *)callback;
-    c->invoke((jclass)context, result, args);
+    c->invoke(result, args);
 }
 
 static void ppbox_free_callback(

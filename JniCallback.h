@@ -5,70 +5,18 @@
 
 #include "plugins/jni/JniValue.h"
 
-template <
-    typename F
->
-struct FuncResult;
-
-template <
-    typename R
->
-struct FuncResult<R ()>
-{
-    typedef R result_t;
-};
-
-template <
-    typename R, 
-    typename A1
->
-struct FuncResult<R (*)(A1)>
-    : FuncResult<R()>
-{
-};
-
-template <
-    typename R, 
-    typename A1, 
-    typename A2
->
-struct FuncResult<R (*)(A1, A2)>
-    : FuncResult<R()>
-{
-};
-
-template <
-    typename R, 
-    typename A1, 
-    typename A2, 
-    typename A3
->
-struct FuncResult<R (*)(A1, A2, A3)>
-    : FuncResult<R()>
-{
-};
-
-template <
-    typename R, 
-    typename A1, 
-    typename A2, 
-    typename A3, 
-    typename A4
->
-struct FuncResult<R (*)(A1, A2, A3, A4)>
-    : FuncResult<R()>
-{
-};
-
 struct __JniCallback
     : JObject
 {
     __JniCallback(
         JNIEnv * env, 
-        jobject method)
+        jobject obj, 
+        char const * sig)
         : env_(env)
+        , obj_(obj)
     {
-        method_ = env->FromReflectedMethod(method);
+       jclass cls = env->GetObjectClass(obj);
+        method_ = env->GetMethodID(cls, "invoke", sig);
     }
 
     virtual ~__JniCallback()
@@ -76,80 +24,58 @@ struct __JniCallback
     }
 
     virtual void invoke(
-        jclass _class, 
         void * result, 
         va_list args) const = 0;
 
+    template <typename cT>
+    void invoke2(
+        cT * result, 
+        ...) const
+    {
+        va_list args;
+        va_start(args, result);
+        typedef typename typec2j<cT>::jtype jT;
+        typename jT::jtype_t r = 
+            jT::call(env_, obj_, method_, args);
+        *result = typename JValue<jT>::value_t(env_, r).cvalue();
+        va_end(args);
+    }
+
+    void invoke2(
+        void * result, 
+        ...) const
+    {
+        va_list args;
+        va_start(args, result);
+        JVoid::call(env_, obj_, method_, args);
+        va_end(args);
+    }
+
 protected:
     JNIEnv * env_;
+    jobject obj_;
     jmethodID method_;
-};
-
-template <
-    typename R
->
-struct _JniCallback
-    : __JniCallback
-{
-    typedef R cresult_t;
-    typedef typename typec2j<cresult_t>::jtype jtype;
-    typedef typename jtype::jtype_t jresult_t;
-
-    _JniCallback(
-        JNIEnv * env, 
-        jobject method)
-        : __JniCallback(env, method)
-    {
-    }
-
-    virtual void invoke(
-        jclass _class, 
-        void * result, 
-        va_list args) const
-    {
-        *(jresult_t *)result = jtype::call_static(env_, _class, method_, args);
-    }
-};
-
-template <>
-struct _JniCallback<void>
-    : __JniCallback
-{
-    typedef void cresult_t;
-    typedef JVoid jtype;
-    typedef void jresult_t;
-
-    _JniCallback(
-        JNIEnv * env, 
-        jobject method)
-        : __JniCallback(env, method)
-    {
-    }
-
-    virtual void invoke(
-        jclass _class, 
-        void * result, 
-        va_list args) const
-    {
-        jtype::call_static(env_, _class, method_, args);
-    }
 };
 
 template <
     typename F
 >
 struct JniCallback
-    : _JniCallback<typename FuncResult<F>::result_t>
+    : __JniCallback
 {
 public:
-    typedef _JniCallback<typename FuncResult<F>::result_t> super_t;
-
     JniCallback(
          JNIEnv * env, 
          jobject method)
-         : super_t(env, method)
+         : __JniCallback(env, method, sig())
     {
     }
+
+    static const char * sig();
+
+    virtual void invoke(
+        void * result, 
+        va_list args) const;
 };
 
 template <
