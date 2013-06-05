@@ -3,14 +3,14 @@
 # import vars
 # SOURCE_DIRECTORY Java文件所在目录
 
-all: MediaSDK.h ppbox_jni.jar
+#all: ppbox_jni.jar
 
-com/pplive/sdk/MediaSDK.class: $(SOURCE_DIRECTORY)/MediaSDK.java
+com/pplive/sdk/PPBOX.class: $(ROOT_SOURCE_DIRECTORY)$(LOCAL_NAME)/PPBOX.java
 	javac -d . $<
 
-MediaSDK.h: com/pplive/sdk/MediaSDK.class
-	javah -o MediaSDK.h com.pplive.sdk.MediaSDK
+#PPBOX.h: com/pplive/sdk/PPBOX.class
+#	javah -o PPBOX.h com.pplive.sdk.PPBOX
 
-ppbox_jni.jar: com/pplive/sdk/MediaSDK.class
+ppbox_jni.jar: com/pplive/sdk/PPBOX.class
 	jar cf ppbox_jni.jar com
 
