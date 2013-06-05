@@ -25,7 +25,6 @@ struct Value<JStruct<T *>, T *>
         , obj_(obj)
     {
         memset(&struct_, 0, sizeof(T));
-        from_jni(env_, obj_, struct_);
     }
 
     Value(
@@ -38,6 +37,11 @@ struct Value<JStruct<T *>, T *>
         memset(&struct_, 0, sizeof(T));
     }
 
+    ~Value()
+    {
+        to_jni();
+    }
+
     jtype_t jvalue()
     {
         return obj_;
@@ -47,6 +51,9 @@ struct Value<JStruct<T *>, T *>
     {
         return &struct_;
     }
+
+private:
+    void to_jni();
 
 private:
     JNIEnv * env_;
@@ -67,17 +74,26 @@ struct Value<JStruct<T const *>, T const *>
         , obj_(obj)
     {
         memset(&struct_, 0, sizeof(T));
+        from_jni();
     }
 
-    ~Value()
+    Value(
+        JNIEnv * env, 
+        T * c, 
+        c_tag_t *)
+        : env_(env)
+        , obj_(NULL)
     {
-        to_jni(env_, obj_, struct_);
+        memset(&struct_, 0, sizeof(T));
     }
 
     ctype_t cvalue() const
     {
         return &struct_;
     }
+
+private:
+    void from_jni();
 
 private:
     JNIEnv * env_;

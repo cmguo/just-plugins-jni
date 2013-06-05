@@ -77,12 +77,12 @@ public:
 
     operator char const *() const
     {
-        return str_ + 1;
+        return c_str();
     }
 
     char const * c_str() const
     {
-        return str_ + 1;
+        return str_ ? (str_ + 1) : NULL;
     }
 
 private:
@@ -110,18 +110,18 @@ struct Value<JString, char const *>
         j_tag_t * = NULL)
         : j_(j)
     {
+        if (j_ == NULL)
+            return;
         jclass cls = env->FindClass("java/lang/String");
         jstring enc = env->NewStringUTF("utf-8");
         jmethodID mtd = env->GetMethodID(cls, "getBytes", "(Ljava/lang/String;)[B");
         jbyteArray arr = (jbyteArray) env->CallObjectMethod(j_, mtd, enc);
         jsize len = env->GetArrayLength(arr);
-        jbyte * bytes = env->GetByteArrayElements(arr, JNI_FALSE);
-        if (len > 0) {
-            char * p = (char *)malloc(len + 2);
-            memcpy(p + 1, bytes, len);
-            p[len + 1] = 0;
-            c_ = p;
-        }
+        jbyte * bytes = env->GetByteArrayElements(arr, NULL);
+        char * p = (char *)malloc(len + 2);
+        memcpy(p + 1, bytes, len);
+        p[len + 1] = 0;
+        c_ = p;
         env->ReleaseByteArrayElements(arr, bytes, 0);
         env->DeleteLocalRef(cls);
         env->DeleteLocalRef(enc);

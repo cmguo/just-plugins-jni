@@ -67,9 +67,12 @@ public:
     JniCallback(
          JNIEnv * env, 
          jobject method)
-         : __JniCallback(env, method, sig())
+         : __JniCallback(env, method, invoke_sig())
     {
     }
+
+    static const char * name_str();
+    static const char * invoke_sig();
 
     static const char * sig();
 
@@ -90,8 +93,10 @@ struct Value<JniCallback<F>, F>
         JNIEnv * env, 
         jobject j, 
         j_tag_t * = NULL)
-        : callback_(new JniCallback<F>(env, j))
+        : callback_(NULL)
     {
+        if (j)
+            callback_ = new JniCallback<F>(env, j);
     }
 
     Value(

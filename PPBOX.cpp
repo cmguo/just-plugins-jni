@@ -9,6 +9,13 @@
 #define PPBOX_JNI_PREFIX_ Java_com_pplive_sdk_
 #define PPBOX_DISABLE_AUTO_START
 #define PPBOX_NO_UNION
+#define PPBOX_LIBRARY_NOT_EXIST(x) LOG(3, "Library %s not found", x)
+#define PPBOX_FUNCTION_NOT_EXIST(x) LOG(3, "Function %s not found", #x)
+
+#ifdef __GNUC__
+#  undef JNIEXPORT
+#  define JNIEXPORT __attribute__ ((visibility("default")))
+#endif
 
 #ifdef __ANDROID__
 #  include <android/log.h>
@@ -19,13 +26,35 @@
 
 #ifdef WIN32
 #  define setenv(n, v, f) SetEnvironmentVariableA(n ,v)
+char *getenv(const char *name)
+{
+    static char v[MAX_PATH];
+    v[0] = 0;
+    GetEnvironmentVariableA(name, v, sizeof(v));
+    return v;
+}
 #endif
 
-#include "plugins/ppbox/ppbox_runtime.h"
+#include <plugins/ppbox/include/IPpboxBoostTypes.h>
+#include <plugins/ppbox/ppbox_runtime.h>
+
+template <
+    typename F
+>
+char const * JniCallback<F>::sig()
+{
+    static char str[64] = {0};
+    if (str[0] == 0) {
+        strncpy(str, "Lcom/pplive/sdk/PPBOX$", sizeof(str));
+        strncat(str, name_str() + 6, sizeof(str));
+        strncat(str, ";", sizeof(str));
+    }
+    return str;
+}
 
 void Ppbox_OnLogDump(char const * log, PP_uint level){
     if(log != NULL){
-        LOG(level, "%s", log);
+        LOG(5, "%s", log);
     }
 }
 
@@ -63,20 +92,38 @@ extern "C" JNIEXPORT jint JNICALL JNI_OnLoad(
     JniClass clsMediaSdk(env, "com/pplive/sdk/PPBOX");
 
     string_holder libPath = clsMediaSdk.static_field_cvalue<JString>("libPath");
-    LOG(3, "libPath = %s", libPath.c_str());
-    char strlib[1024] = {0};
-    strncpy(strlib, libPath, sizeof(strlib));
-    strncat(strlib, "/", sizeof(strlib));
-    strncat(strlib, PPBOX_LIB_NAME, sizeof(strlib));
-    PPBOX_Load(strlib);
-
     string_holder logPath = clsMediaSdk.static_field_cvalue<JString>("logPath");
-    LOG(3, "logPath = %s", logPath.c_str());
-    setenv("TMPDIR", libPath, 1);
-
     bool logOn = g_logOn = clsMediaSdk.static_field_cvalue<JBoolean>("logOn");
+
+    LOG(3, "libPath = %s", libPath.c_str());
+    LOG(3, "logPath = %s", logPath.c_str());
+    LOG(3, "logOn = %s", logOn ? "true" : "false");
+
+    char * lib_path_old = getenv("LD_LIBRARY_PATH");
+    LOG(3, "LD_LIBRARY_PATH = %s", lib_path_old);
+    if (lib_path_old == NULL || strstr(lib_path_old, libPath) == NULL) {
+        char str_lib_path[1024] = {0};
+        strncat(str_lib_path, libPath, 1024);
+        strncat(str_lib_path, ":", 1024);
+        if (lib_path_old)
+            strncat(str_lib_path, lib_path_old, 1024);
+        setenv("LD_LIBRARY_PATH", str_lib_path, 1);
+        LOG(3, "LD_LIBRARY_PATH = %s", str_lib_path);
+    }
+
+    setenv("TMPDIR", logPath, 1);
+
+    if (PPBOX_Load() == NULL) {
+        char strlib[1024] = {0};
+        strncpy(strlib, libPath, sizeof(strlib));
+        strncat(strlib, "/", sizeof(strlib));
+        strncat(strlib, PPBOX_LIB_NAME, sizeof(strlib));
+        if (PPBOX_Load(strlib) == NULL) {
+            return JNI_ERR;
+        }
+    }
+
     if (logOn) {
-        LOG(3, "logOn = %s", logOn ? "true" : "false");
         long logLevel = clsMediaSdk.static_field_cvalue<JInt>("logLevel");
         LOG(3, "logLevel = %ld", logLevel);
         PPBOX_LogDump(Ppbox_OnLogDump, logLevel);
