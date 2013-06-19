@@ -13,14 +13,16 @@ struct __JniCallback
         jobject obj, 
         char const * sig)
         : env_(env)
-        , obj_(obj)
+        , obj_(env->NewGlobalRef(obj))
     {
-       jclass cls = env->GetObjectClass(obj);
+        env_->GetJavaVM(&vm_);
+        jclass cls = env->GetObjectClass(obj);
         method_ = env->GetMethodID(cls, "invoke", sig);
     }
 
     virtual ~__JniCallback()
     {
+        env_->DeleteGlobalRef(obj_);
     }
 
     virtual void invoke(
@@ -35,9 +37,11 @@ struct __JniCallback
         va_list args;
         va_start(args, result);
         typedef typename typec2j<cT>::jtype jT;
+        JNIEnv * env = NULL;
+        vm_->AttachCurrentThread(&env, NULL);
         typename jT::jtype_t r = 
-            jT::call(env_, obj_, method_, args);
-        *result = typename JValue<jT>::value_t(env_, r).cvalue();
+            jT::call(env, obj_, method_, args);
+        *result = typename JValue<jT>::value_t(env, r).cvalue();
         va_end(args);
     }
 
@@ -47,11 +51,14 @@ struct __JniCallback
     {
         va_list args;
         va_start(args, result);
-        JVoid::call(env_, obj_, method_, args);
+        JNIEnv * env = NULL;
+        vm_->AttachCurrentThread(&env, NULL);
+        JVoid::call(env, obj_, method_, args);
         va_end(args);
     }
 
 protected:
+    JavaVM * vm_;
     JNIEnv * env_;
     jobject obj_;
     jmethodID method_;

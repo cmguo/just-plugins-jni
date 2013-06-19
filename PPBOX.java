@@ -1,5 +1,6 @@
 package com.pplive.sdk;
 
+import java.nio.ByteBuffer;
 import java.util.Properties;
 
 public class PPBOX
@@ -21,22 +22,27 @@ public class PPBOX
     {
         try {
             Properties props = System.getProperties();
-            String libPath = props.getProperty("java.library.path");
-            System.out.println("java.library.path = " + libPath);
             String osArch = props.getProperty("os.arch");
-            System.out.println("os.arch = " + osArch);
-            if (osArch != null && osArch.contains("x86"))             {
+            System.out.println(osArch);
+            if (osArch == null) {
+                System.out.println("Can't get arch info.");
+            } else if (osArch.contains("x86")) {
                 System.loadLibrary("libppbox_jni-win32-msvc90-mt-gd-1.2.0");
-            } else if (osArch != null && osArch.contains("mips")) {
+            } else if (osArch.contains("mips")) {
                 System.loadLibrary("ppbox_jni-mips-android-gcc44-mt-1.2.0");
-            } else if (osArch != null && osArch.contains("i386")) {
-                System.loadLibrary("ppbox_jni-linux-x86-gcc44-mt-gd-1.2.0");
-            } else {
+            } else if (osArch.contains("i386")) {
+                System.loadLibrary("ppbox_jni-linux-x86-gcc44-mt-1.2.0");
+            } else if (osArch.contains("armv7l")) {
+                System.loadLibrary("ppbox_jni-armv7a-android-gcc44-mt-1.2.0");
+            } else if (osArch.contains("arm")) {
+                System.out.println(osArch);
                 System.loadLibrary("ppbox_jni-armandroid-r4-gcc44-mt-1.2.0");
-            }
+            } else {
+                System.out.println("Arch " + osArch + " not supported.");
+           }
         } catch (Throwable e) {
-            e.printStackTrace();
-            return -1;
+        	e.printStackTrace();
+        	return -1;
         }
         return 0;
     }
@@ -47,7 +53,7 @@ public class PPBOX
 
     public interface CallBack
     {
-        boolean invoke(long context, int err);
+    	boolean invoke(long context, int err);
     };
     
     public static class DownloadStatistic
@@ -71,52 +77,54 @@ public class PPBOX
 
     public static class SampleBuffer
     {
-        public byte[] data;
-        public int len;
+    	public byte[] data;
+    	public int len;
     }
     
     public interface GetSampleBuffersCallBack
     {
-        boolean invoke(long context, SampleBuffer buffers);
+    	boolean invoke(long context, SampleBuffer buffers);
     };
     
     public interface FreeSampleCallBack
     {
-        boolean invoke(long context);
+    	boolean invoke(long context);
     };
     
     public static class CaptureConfigData
     {
-        public int stream_count;
-        public GetSampleBuffersCallBack get_sample_buffers;
-        public FreeSampleCallBack free_sample;
+    	public int stream_count;
+    	public int flags;
+    	public GetSampleBuffersCallBack get_sample_buffers;
+    	public FreeSampleCallBack free_sample;
     };
     
     public static class StreamInfo
     {
-        public int type;
-        public int sub_type;
-        public int time_scale;
-        public int bitrate;
-        public int __union0;
-        public int __union1;
-        public int __union2;
-        public int format_type;
-        public int format_size;
-        public byte[] format_buffer;
+    	public int type;
+    	public int sub_type;
+    	public int time_scale;
+    	public int bitrate;
+    	public int __union0;
+    	public int __union1;
+    	public int __union2;
+    	public int __union3;
+    	public int format_type;
+    	public int format_size;
+    	public ByteBuffer format_buffer;
     };
     
     public static class Sample
     {
-        public int itrack;
-        public int flags;
-        public long time;
-        public long decode_time;
-        public int composite_time_delta;
-        public int duration;
-        public int size;
-        public byte[] buffer;
-        public long context;
+    	public int itrack;
+    	public int flags;
+    	public long time;
+    	public long decode_time;
+    	public int composite_time_delta;
+    	public int duration;
+    	public int size;
+    	public ByteBuffer buffer;
+    	public long context;
     };
     
     public native static long CaptureCreate(String name, String dest);
@@ -131,60 +139,8 @@ public class PPBOX
 
     public static void main(String[] argv)
     {
-        load();
+    	load();
         StartEngine(argv[0], argv[1], argv[2]);
-
-        long capture = CaptureCreate("test", "rtmp://192.168.14.205/live/capture?format=rtm");
-
-        CaptureConfigData config = new CaptureConfigData();
-        config.stream_count = 1;
-        config.free_sample = new FreeSampleCallBack() {
-            @Override
-            public boolean invoke(long context) {
-                return true;
-            }
-        };
-        CaptureInit(capture, config);
-
-        StreamInfo info = new StreamInfo();
-        info.type = fourcc("VIDE");
-        info.sub_type = fourcc("NV16");
-        info.time_scale = 30;
-        info.bitrate = 0;
-        info.__union0 = 640;
-        info.__union1 = 480;
-        info.__union2 = 25;
-        info.format_type = 0;
-        info.format_size = 0;
-        info.format_buffer = new byte[0];
-        CaptureSetStream(capture, 0, info);
-
-        Sample sample = new PPBOX.Sample();
-        sample.itrack = 0;
-        sample.flags = 0;
-        sample.time = 0;
-        sample.decode_time = 0;
-        sample.composite_time_delta = 0;
-        sample.duration = 0;
-        sample.size = 0;
-        sample.buffer = new byte[0];
-        CapturePutSample(capture, sample);
-
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         StopEngine();
-    }
-
-    private static int fourcc(String f)
-    {
-        byte[] bytes = f.getBytes();
-        return (int)bytes[0] << 24 
-           | (int)bytes[2] << 16 
-           | (int)bytes[1] << 8 
-           | (int)bytes[0];
     }
 }

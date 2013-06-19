@@ -5,7 +5,7 @@
 #include "plugins/jni/JniStruct.h"
 #include "plugins/jni/JniCallback.h"
 #include "plugins/jni/JString.h"
-#include "plugins/jni/JByteArray.h"
+#include "plugins/jni/JByteBuffer.h"
 #include "plugins/jni/JVargList.h"
 
 #include <boost/preprocessor/cat.hpp>
@@ -61,13 +61,13 @@
     template <> \
     void Value<JStruct<name *>, name *>::to_jni() \
     { \
-        static JniClass _class(env_, obj_); \
+        JniClass _class(env_, obj_); \
         FIELDS_TO_JNI(nf, fields); \
     } \
     template <> \
     void Value<JStruct<name const *>, name const *>::from_jni() \
     { \
-        static JniClass _class(env_, obj_); \
+        JniClass _class(env_, obj_); \
         FIELDS_FROM_JNI(nf, fields); \
     } \
     BIND_STRUCT_TYPE(name *) \
