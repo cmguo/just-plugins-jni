@@ -5,12 +5,14 @@
 
 #all: ppbox_jni.jar
 
-com/pplive/sdk/PPBOX.class: $(ROOT_SOURCE_DIRECTORY)$(LOCAL_NAME)/PPBOX.java
+com/pplive/sdk/%.class: $(ROOT_SOURCE_DIRECTORY)$(LOCAL_NAME)/%.java
 	javac -d . $<
 
 #PPBOX.h: com/pplive/sdk/PPBOX.class
 #	javah -o PPBOX.h com.pplive.sdk.PPBOX
 
-ppbox_jni.jar: com/pplive/sdk/PPBOX.class
+com/pplive/sdk/Test.class: com/pplive/sdk/PPBOX.class
+
+ppbox_jni.jar: com/pplive/sdk/PPBOX.class com/pplive/sdk/Test.class
 	jar cf ppbox_jni.jar com
 
