@@ -1,18 +1,18 @@
 # MakeJava.mk
 
-# import vars
 # SOURCE_DIRECTORY Java文件所在目录
+SOURCE_DIRECTORY	:= $(ROOT_SOURCE_DIRECTORY)$(LOCAL_NAME)
 
 #all: ppbox_jni.jar
 
-com/pplive/sdk/%.class: $(ROOT_SOURCE_DIRECTORY)$(LOCAL_NAME)/%.java
-	javac -d . $<
+FILES_JAVA		:= $(wildcard $(SOURCE_DIRECTORY)/*/*/*/*.java)
+FILES_CLASS		:= $(patsubst $(SOURCE_DIRECTORY)/%,%,$(patsubst %.java,%.class,$(FILES_JAVA)))
 
-#PPBOX.h: com/pplive/sdk/PPBOX.class
-#	javah -o PPBOX.h com.pplive.sdk.PPBOX
+$(FILES_CLASS): %.class: $(SOURCE_DIRECTORY)/%.java
+	javac -d . $<
 
 com/pplive/sdk/Test.class: com/pplive/sdk/PPBOX.class
 
-ppbox_jni.jar: com/pplive/sdk/PPBOX.class com/pplive/sdk/Test.class
+ppbox_jni.jar: $(FILES_CLASS)
 	jar cf ppbox_jni.jar com
 
