@@ -51,6 +51,18 @@ public class Test
         sample.context = 1;
         PPBOX.CapturePutSample(capture, sample);
 
+        sample.decode_time = 1;
+        sample.context = 2;
+        PPBOX.CapturePutSample(capture, sample);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        PPBOX.CaptureDestroy(capture);
+
         try {
             Thread.sleep(10000);
         } catch (InterruptedException e) {

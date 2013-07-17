@@ -123,6 +123,8 @@ extern "C" JNIEXPORT jint JNICALL JNI_OnLoad(
         }
     }
 
+    LOG(3, "PPBOX Version: %s", PPBOX_GetVersion());
+
     if (logOn) {
         long logLevel = clsMediaSdk.static_field_cvalue<JInt>("logLevel");
         LOG(3, "logLevel = %ld", logLevel);
