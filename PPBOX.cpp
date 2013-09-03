@@ -36,7 +36,7 @@ char *getenv(const char *name)
 #endif
 
 #include <plugins/ppbox/include/IPpboxBoostTypes.h>
-#include <plugins/ppbox/ppbox_runtime.h>
+#include <plugins/ppbox/IPpboxRuntime.h>
 
 template <
     typename F
