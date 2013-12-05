@@ -35,8 +35,10 @@ char *getenv(const char *name)
 }
 #endif
 
-#include <plugins/ppbox/include/IPpboxBoostTypes.h>
-#include <plugins/ppbox/IPpboxRuntime.h>
+#define _PPBOX_PPBOX_I_DISPATCH_H_ // disable IDispatch
+#define _PPBOX_PPBOX_I_PLUGIN_H_ // disable IPlugin
+#include <ppbox/ppbox/IPpboxBoostTypes.h>
+#include <ppbox/ppbox/IPpboxRuntime.h>
 
 template <
     typename F
@@ -128,7 +130,7 @@ extern "C" JNIEXPORT jint JNICALL JNI_OnLoad(
     if (logOn) {
         long logLevel = clsMediaSdk.static_field_cvalue<JInt>("logLevel");
         LOG(3, "logLevel = %ld", logLevel);
-        PPBOX_LogDump(Ppbox_OnLogDump, logLevel);
+        PPBOX_SetLogHook(Ppbox_OnLogDump, logLevel);
     }
 
     PPBOX_RedirectCallback(ppbox_redirect_callback, ppbox_free_callback, clsMediaSdk.get_class());

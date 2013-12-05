@@ -35,8 +35,8 @@
 #define FIELDS_FROM_JNI(np, params) LIST_PAIR_FORMAT(FIELD_FROM_JNI, np, params)
 
 #define PPBOX_FUNC(type, name, np, params) \
-    typedef type (* FT_ ## name)(PARAMS_TYPE(np, params)); \
-    inline type name(PARAMS_TYPE_NAME(np, params)) \
+    typedef type (* FT_ ## name)(FUNCTION_PARAMS_TYPE(np, params)); \
+    inline type name(FUNCTION_PARAMS_TYPE_NAME(np, params)) \
     { \
         static FT_ ## name fp = NULL; \
         if (fp == NULL) { \
@@ -47,7 +47,7 @@
                 return type##_defalut(); \
             } \
         } \
-        return fp(PARAMS_NAME(np, params)); \
+        return fp(FUNCTION_PARAMS_NAME(np, params)); \
     } \
     extern "C" JNIEXPORT typec2j<type>::jtype::jtype_t JNICALL BOOST_PP_CAT(PPBOX_JNI_PREFIX_, name)( \
         JNIEnv *env, jclass thiz PARAMS_JNI_TYPE_NAME(np, params)) \
@@ -57,7 +57,7 @@
     } \
 
 #define PPBOX_STRUCT(name, nf, fields) \
-    struct name { FIELDS_TYPE_NAME(nf, fields) }; \
+    struct name { STRUCT_FIELDS_TYPE_NAME(nf, fields) }; \
     template <> \
     void Value<JStruct<name *>, name *>::to_jni() \
     { \
