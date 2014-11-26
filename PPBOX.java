@@ -51,6 +51,8 @@ public class PPBOX
 
     public native static long StopEngine();
 
+    public native static long SetConfig(String module, String section, String key, String value);
+
     public interface CallBack
     {
     	boolean invoke(long context, int err);
