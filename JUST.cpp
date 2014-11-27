@@ -1,16 +1,16 @@
-// PPBOX.cpp
+// JUST.cpp
 
 #include "plugins/jni/Common.h"
-#include "plugins/jni/PPBOX.h"
+#include "plugins/jni/JUST.h"
 #include "plugins/jni/JniStruct.h"
 #include "plugins/jni/JniClass.h"
 #include "plugins/jni/Version.h"
 
-#define PPBOX_JNI_PREFIX_ Java_com_pplive_sdk_
-#define PPBOX_DISABLE_AUTO_START
-#define PPBOX_NO_UNION
-#define PPBOX_LIBRARY_NOT_EXIST(x) LOG(3, "Library %s not found", x)
-#define PPBOX_FUNCTION_NOT_EXIST(x) LOG(3, "Function %s not found", #x)
+#define JUST_JNI_PREFIX_ Java_com_pplive_sdk_
+#define JUST_DISABLE_AUTO_START
+#define JUST_NO_UNION
+#define JUST_LIBRARY_NOT_EXIST(x) LOG(3, "Library %s not found", x)
+#define JUST_FUNCTION_NOT_EXIST(x) LOG(3, "Function %s not found", #x)
 
 #ifdef __GNUC__
 #  undef JNIEXPORT
@@ -19,7 +19,7 @@
 
 #ifdef __ANDROID__
 #  include <android/log.h>
-#  define LOG(level, ...) __android_log_print(level  , "PPBOX", __VA_ARGS__)
+#  define LOG(level, ...) __android_log_print(level  , "JUST", __VA_ARGS__)
 #else
 #  define LOG(level, ...) printf(__VA_ARGS__); printf("\n")
 #endif
@@ -35,10 +35,10 @@ char *getenv(const char *name)
 }
 #endif
 
-#define _PPBOX_PPBOX_I_DISPATCH_H_ // disable IDispatch
-#define _PPBOX_PPBOX_I_PLUGIN_H_ // disable IPlugin
-#include <ppbox/ppbox/IPpboxBoostTypes.h>
-#include <ppbox/ppbox/IPpboxRuntime.h>
+#define _JUST_JUST_I_DISPATCH_H_ // disable IDispatch
+#define _JUST_JUST_I_PLUGIN_H_ // disable IPlugin
+#include <just/just/IPpboxBoostTypes.h>
+#include <just/just/IPpboxRuntime.h>
 
 template <
     typename F
@@ -47,7 +47,7 @@ char const * JniCallback<F>::sig()
 {
     static char str[64] = {0};
     if (str[0] == 0) {
-        strncpy(str, "Lcom/pplive/sdk/PPBOX$", sizeof(str));
+        strncpy(str, "Lcom/pplive/sdk/JUST$", sizeof(str));
         strncat(str, name_str() + 6, sizeof(str));
         strncat(str, ";", sizeof(str));
     }
@@ -62,7 +62,7 @@ void Ppbox_OnLogDump(char const * log, PP_uint level){
 
 bool g_logOn = false;
 
-static void ppbox_redirect_callback(
+static void just_redirect_callback(
     PP_context context, 
     PP_handle callback, 
     void * result, 
@@ -72,7 +72,7 @@ static void ppbox_redirect_callback(
     c->invoke(result, args);
 }
 
-static void ppbox_free_callback(
+static void just_free_callback(
        PP_handle callback)
 {
     __JniCallback * c = (__JniCallback *)callback;
@@ -91,7 +91,7 @@ extern "C" JNIEXPORT jint JNICALL JNI_OnLoad(
         return JNI_ERR;
     }
 
-    JniClass clsMediaSdk(env, "com/pplive/sdk/PPBOX");
+    JniClass clsMediaSdk(env, "com/pplive/sdk/JUST");
 
     string_holder libPath = clsMediaSdk.static_field_cvalue<JString>("libPath");
     string_holder logPath = clsMediaSdk.static_field_cvalue<JString>("logPath");
@@ -115,25 +115,25 @@ extern "C" JNIEXPORT jint JNICALL JNI_OnLoad(
 
     setenv("TMPDIR", logPath, 1);
 
-    if (PPBOX_Load() == NULL) {
+    if (JUST_Load() == NULL) {
         char strlib[1024] = {0};
         strncpy(strlib, libPath, sizeof(strlib));
         strncat(strlib, "/", sizeof(strlib));
-        strncat(strlib, PPBOX_LIB_NAME, sizeof(strlib));
-        if (PPBOX_Load(strlib) == NULL) {
+        strncat(strlib, JUST_LIB_NAME, sizeof(strlib));
+        if (JUST_Load(strlib) == NULL) {
             return JNI_ERR;
         }
     }
 
-    LOG(3, "PPBOX Version: %s", PPBOX_GetVersion());
+    LOG(3, "JUST Version: %s", JUST_GetVersion());
 
     if (logOn) {
         long logLevel = clsMediaSdk.static_field_cvalue<JInt>("logLevel");
         LOG(3, "logLevel = %ld", logLevel);
-        PPBOX_SetLogHook(Ppbox_OnLogDump, logLevel);
+        JUST_SetLogHook(Ppbox_OnLogDump, logLevel);
     }
 
-    PPBOX_RedirectCallback(ppbox_redirect_callback, ppbox_free_callback, clsMediaSdk.get_class());
+    JUST_RedirectCallback(just_redirect_callback, just_free_callback, clsMediaSdk.get_class());
 
     LOG(3, "[JNI_OnLoad] finish");
 
@@ -146,7 +146,7 @@ extern "C" JNIEXPORT void JNICALL JNI_OnUnload(
 {
     LOG(3, "[JNI_OnUnload] begin");
 
-    PPBOX_Unload();
+    JUST_Unload();
 
     if (g_logOn) {
         // Ppbox_LogDump(NULL, 0);

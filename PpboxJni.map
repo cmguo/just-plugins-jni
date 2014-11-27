@@ -3,18 +3,18 @@
                 JNI_OnLoad;
 		JNI_OnUnload;
 
-		Java_com_pplive_sdk_PPBOX_StartEngine;
-		Java_com_pplive_sdk_PPBOX_StopEngine;
+		Java_com_pplive_sdk_JUST_StartEngine;
+		Java_com_pplive_sdk_JUST_StopEngine;
 
-		Java_com_pplive_sdk_PPBOX_DownloadOpen;
-		Java_com_pplive_sdk_PPBOX_DownloadClose;
-		Java_com_pplive_sdk_PPBOX_GetDownloadInfo;	
+		Java_com_pplive_sdk_JUST_DownloadOpen;
+		Java_com_pplive_sdk_JUST_DownloadClose;
+		Java_com_pplive_sdk_JUST_GetDownloadInfo;	
 
-		Java_com_pplive_sdk_PPBOX_CaptureCreate;
-		Java_com_pplive_sdk_PPBOX_CaptureInit;
-		Java_com_pplive_sdk_PPBOX_CaptureSetStream;
-		Java_com_pplive_sdk_PPBOX_CapturePutSample;
-		Java_com_pplive_sdk_PPBOX_CaptureDestroy;
+		Java_com_pplive_sdk_JUST_CaptureCreate;
+		Java_com_pplive_sdk_JUST_CaptureInit;
+		Java_com_pplive_sdk_JUST_CaptureSetStream;
+		Java_com_pplive_sdk_JUST_CapturePutSample;
+		Java_com_pplive_sdk_JUST_CaptureDestroy;
 
 
 	local: *;

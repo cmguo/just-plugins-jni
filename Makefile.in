@@ -8,7 +8,7 @@ PROJECT_TYPE			:= lib
 
 ## 生成目标名称（完整文件名称要根据类型PROJECT_TYPE、配置LOCAL_CONFIG、版本PROJECT_VERSION增加前缀、后缀）
 
-PROJECT_TARGET			:= ppbox_jni
+PROJECT_TARGET			:= just_jni
 
 ## 项目版本号（只要前三位，最后一位自动生成）
 
@@ -63,7 +63,7 @@ endif
 
 PROJECT_VERSION_SCRIPT		:= PpboxJni.map
 
-target: ppbox_jni.jar
+target: just_jni.jar
 
 #$(shell $(MAKE) SOURCE_DIRECTORY=$(ROOT_SOURCE_DIRECTORY)$(LOCAL_NAME) -f $(ROOT_DIRECTORY)$(LOCAL_NAME)/JavaMake.mk)
 include $(ROOT_DIRECTORY)$(LOCAL_NAME)/JavaMake.mk

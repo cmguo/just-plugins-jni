@@ -4,7 +4,7 @@
 
 #define LIB
 
-#define NAME ppbox_jni
+#define NAME just_jni
 
 #define BEGIN_NAME_SPACE namespace plugins { namespace jni {
 

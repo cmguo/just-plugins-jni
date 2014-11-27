@@ -3,7 +3,7 @@ package com.pplive.sdk;
 import java.nio.ByteBuffer;
 import java.util.Properties;
 
-public class PPBOX
+public class JUST
 {
 
     public static final int LEVEL_FATAL = 1;
@@ -27,16 +27,16 @@ public class PPBOX
             if (osArch == null) {
                 System.out.println("Can't get arch info.");
             } else if (osArch.contains("x86")) {
-                System.loadLibrary("libppbox_jni-win32-msvc90-mt-gd-1.2.0");
+                System.loadLibrary("libjust_jni-win32-msvc90-mt-gd-1.2.0");
             } else if (osArch.contains("mips")) {
-                System.loadLibrary("ppbox_jni-mips-android-gcc44-mt-1.2.0");
+                System.loadLibrary("just_jni-mips-android-gcc44-mt-1.2.0");
             } else if (osArch.contains("i386")) {
-                System.loadLibrary("ppbox_jni-linux-x86-gcc44-mt-1.2.0");
+                System.loadLibrary("just_jni-linux-x86-gcc44-mt-1.2.0");
             } else if (osArch.contains("armv7l")) {
-                System.loadLibrary("ppbox_jni-armv7a-android-gcc44-mt-1.2.0");
+                System.loadLibrary("just_jni-armv7a-android-gcc44-mt-1.2.0");
             } else if (osArch.contains("arm")) {
                 System.out.println(osArch);
-                System.loadLibrary("ppbox_jni-armandroid-r4-gcc44-mt-1.2.0");
+                System.loadLibrary("just_jni-armandroid-r4-gcc44-mt-1.2.0");
             } else {
                 System.out.println("Arch " + osArch + " not supported.");
            }
