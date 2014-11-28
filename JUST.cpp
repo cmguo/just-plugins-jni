@@ -6,7 +6,7 @@
 #include "plugins/jni/JniClass.h"
 #include "plugins/jni/Version.h"
 
-#define JUST_JNI_PREFIX_ Java_com_pplive_sdk_
+#define JUST_JNI_PREFIX_ Java_com_just_sdk_
 #define JUST_DISABLE_AUTO_START
 #define JUST_NO_UNION
 #define JUST_LIBRARY_NOT_EXIST(x) LOG(3, "Library %s not found", x)
@@ -47,7 +47,7 @@ char const * JniCallback<F>::sig()
 {
     static char str[64] = {0};
     if (str[0] == 0) {
-        strncpy(str, "Lcom/pplive/sdk/JUST$", sizeof(str));
+        strncpy(str, "Lcom/just/sdk/JUST$", sizeof(str));
         strncat(str, name_str() + 6, sizeof(str));
         strncat(str, ";", sizeof(str));
     }
@@ -91,7 +91,7 @@ extern "C" JNIEXPORT jint JNICALL JNI_OnLoad(
         return JNI_ERR;
     }
 
-    JniClass clsMediaSdk(env, "com/pplive/sdk/JUST");
+    JniClass clsMediaSdk(env, "com/just/sdk/JUST");
 
     string_holder libPath = clsMediaSdk.static_field_cvalue<JString>("libPath");
     string_holder logPath = clsMediaSdk.static_field_cvalue<JString>("logPath");

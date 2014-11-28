@@ -1,4 +1,4 @@
-package com.pplive.sdk;
+package com.just.sdk;
 
 import java.util.Properties;
 import java.nio.ByteBuffer;
