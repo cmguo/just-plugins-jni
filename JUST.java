@@ -18,7 +18,7 @@ public class JUST
     public static boolean logOn = true;
     public static int logLevel = LEVEL_DEBUG;
 
-     public static long load()
+    public static long load()
     {
         try {
             Properties props = System.getProperties();
@@ -33,10 +33,10 @@ public class JUST
             } else if (osArch.contains("i386")) {
                 System.loadLibrary("just_jni-linux-x86-gcc44-mt-1.2.0");
             } else if (osArch.contains("armv7l")) {
-                System.loadLibrary("just_jni-armv7a-android-gcc44-mt-1.2.0");
+                System.loadLibrary("just_jni-arm-android-r9-gcc46-mt-1.2.0");
             } else if (osArch.contains("arm")) {
                 System.out.println(osArch);
-                System.loadLibrary("just_jni-armandroid-r4-gcc44-mt-1.2.0");
+                System.loadLibrary("just_jni-arm-android-r9-gcc46-mt-1.2.0");
             } else {
                 System.out.println("Arch " + osArch + " not supported.");
            }
