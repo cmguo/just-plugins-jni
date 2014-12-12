@@ -35,10 +35,10 @@ char *getenv(const char *name)
 }
 #endif
 
-#define _JUST_JUST_I_DISPATCH_H_ // disable IDispatch
-#define _JUST_JUST_I_PLUGIN_H_ // disable IPlugin
-#include <just/just/IPpboxBoostTypes.h>
-#include <just/just/IPpboxRuntime.h>
+#define _JUST_EXPORT_I_DISPATCH_H_ // disable IDispatch
+#define _JUST_EXPORT_I_PLUGIN_H_ // disable IPlugin
+#include <just/export/IJustBoostTypes.h>
+#include <just/export/IJustRuntime.h>
 
 template <
     typename F
@@ -54,7 +54,7 @@ char const * JniCallback<F>::sig()
     return str;
 }
 
-void Ppbox_OnLogDump(char const * log, PP_uint level){
+void Just_OnLogDump(char const * log, PP_uint level){
     if(log != NULL){
         LOG(5, "%s", log);
     }
@@ -130,7 +130,7 @@ extern "C" JNIEXPORT jint JNICALL JNI_OnLoad(
     if (logOn) {
         long logLevel = clsMediaSdk.static_field_cvalue<JInt>("logLevel");
         LOG(3, "logLevel = %ld", logLevel);
-        JUST_SetLogHook(Ppbox_OnLogDump, logLevel);
+        JUST_SetLogHook(Just_OnLogDump, logLevel);
     }
 
     JUST_RedirectCallback(just_redirect_callback, just_free_callback, clsMediaSdk.get_class());
@@ -149,7 +149,7 @@ extern "C" JNIEXPORT void JNICALL JNI_OnUnload(
     JUST_Unload();
 
     if (g_logOn) {
-        // Ppbox_LogDump(NULL, 0);
+        // Just_LogDump(NULL, 0);
     }
 
     LOG(3, "[JNI_OnUnload] finish");

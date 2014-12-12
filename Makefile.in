@@ -61,7 +61,7 @@ ifneq ($(findstring android,$(PLATFORM_NAME)),)
 PROJECT_DEPEND_LIBRARYS		:= $(PROJECT_DEPEND_LIBRARYS) log
 endif
 
-PROJECT_VERSION_SCRIPT		:= PpboxJni.map
+PROJECT_VERSION_SCRIPT		:= JustJni.map
 
 target: just_jni.jar
 

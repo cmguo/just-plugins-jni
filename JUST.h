@@ -1,4 +1,4 @@
-// PpboxJni.h
+// JustJni.h
 
 #include "plugins/jni/JniTypes.h"
 #include "plugins/jni/JniValue.h"
