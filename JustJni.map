@@ -6,6 +6,8 @@
 		Java_com_just_sdk_JUST_StartEngine;
 		Java_com_just_sdk_JUST_StopEngine;
 
+        Java_com_just_sdk_JUST_SetConfig;
+
 		Java_com_just_sdk_JUST_DownloadOpen;
 		Java_com_just_sdk_JUST_DownloadClose;
 		Java_com_just_sdk_JUST_GetDownloadInfo;	
