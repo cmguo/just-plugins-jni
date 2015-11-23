@@ -42,5 +42,6 @@ BIND_TYPE(JDouble, double)
 
 BIND_TYPE(JPointer<void *>, void *)
 BIND_TYPE(JPointer<void const *>, void const *)
+BIND_TYPE(JPointer<unsigned int *>, unsigned int *)
 
 #endif // _PLUGINS_JNI_TYPE_BIND_H_
