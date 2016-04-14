@@ -32,6 +32,8 @@ public class JUST
                 System.loadLibrary("just_jni-mips-android-gcc44-mt-1.2.0");
             } else if (osArch.contains("i386")) {
                 System.loadLibrary("just_jni-linux-x86-gcc44-mt-1.2.0");
+            } else if (osArch.contains("amd64")) {
+                System.loadLibrary("just_jni-linux-x64-gcc44-mt-1.2.0");
             } else if (osArch.contains("armv7l")) {
                 System.loadLibrary("just_jni-arm-android-r9-gcc46-mt-1.2.0");
             } else if (osArch.contains("arm")) {
@@ -47,11 +49,15 @@ public class JUST
         return 0;
     }
 
+    public native static String GetVersion();
+
     public native static long StartEngine(String gid, String pid, String auth);
 
     public native static long StopEngine();
 
     public native static long SetConfig(String module, String section, String key, String value);
+
+    public native static String GetConfig(String module, String section, String key);
 
     public interface CallBack
     {

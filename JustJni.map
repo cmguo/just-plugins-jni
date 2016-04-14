@@ -1,12 +1,15 @@
 {
 	global: 
-                JNI_OnLoad;
+        JNI_OnLoad;
 		JNI_OnUnload;
+
+		Java_com_just_sdk_JUST_GetVersion;
 
 		Java_com_just_sdk_JUST_StartEngine;
 		Java_com_just_sdk_JUST_StopEngine;
 
         Java_com_just_sdk_JUST_SetConfig;
+        Java_com_just_sdk_JUST_GetConfig;
 
 		Java_com_just_sdk_JUST_DownloadOpen;
 		Java_com_just_sdk_JUST_DownloadClose;

@@ -20,8 +20,10 @@
 #ifdef __ANDROID__
 #  include <android/log.h>
 #  define LOG(level, ...) __android_log_print(level  , "JUST", __VA_ARGS__)
+#  define LOG2(level, ...) __android_log_print(level  , "JUST", __VA_ARGS__)
 #else
-#  define LOG(level, ...) printf(__VA_ARGS__); printf("\n")
+#  define LOG(level, ...) printf(__VA_ARGS__); putchar('\n')
+#  define LOG2(level, ...) printf(__VA_ARGS__)
 #endif
 
 #ifdef WIN32
@@ -56,11 +58,16 @@ char const * JniCallback<F>::sig()
 
 void Just_OnLogDump(char const * log, PP_uint level){
     if(log != NULL){
-        LOG(5, "%s", log);
+        LOG2(5, "W/JUST(0): %s", log);
     }
 }
 
 bool g_logOn = false;
+
+/* pass va_list will compile error on new g++ compilers
+ * error: invalid use of non-lvalue array
+ * error ocurs in: "va_arg(args, va_list)"
+ */
 
 static void just_redirect_callback(
     PP_context context, 
@@ -115,14 +122,25 @@ extern "C" JNIEXPORT jint JNICALL JNI_OnLoad(
 
     setenv("TMPDIR", logPath, 1);
 
-    if (JUST_Load() == NULL) {
-        char strlib[1024] = {0};
-        strncpy(strlib, libPath, sizeof(strlib));
+    char strlib[1024] = {0};
+    char const * path = libPath;
+    char const * clone = strchr(path, ':');
+#define MIN(x, y) (x) < (y) ? (x) : (y)
+    while (path) {
+        strncpy(strlib, path, MIN(clone - path, sizeof(strlib)));
         strncat(strlib, "/", sizeof(strlib));
         strncat(strlib, JUST_LIB_NAME, sizeof(strlib));
-        if (JUST_Load(strlib) == NULL) {
-            return JNI_ERR;
+        LOG(3, "JUST_Load(%s)", strlib);
+        if (JUST_Load(strlib)) {
+            break;
         }
+        LOG(3, "JUST_Load failed: %s", strerror(errno));
+        path = clone ? clone + 1 : NULL;
+        clone = strchr(path, ':');
+    }
+    // Use default search
+    if (JUST_Load() == NULL) {
+        return JNI_ERR;
     }
 
     LOG(3, "JUST Version: %s", JUST_GetVersion());
@@ -133,7 +151,7 @@ extern "C" JNIEXPORT jint JNICALL JNI_OnLoad(
         JUST_SetLogHook(Just_OnLogDump, logLevel);
     }
 
-    JUST_RedirectCallback(just_redirect_callback, just_free_callback, clsMediaSdk.get_class());
+    //JUST_RedirectCallback(just_redirect_callback, just_free_callback, clsMediaSdk.get_class());
 
     LOG(3, "[JNI_OnLoad] finish");
 
