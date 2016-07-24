@@ -14,6 +14,7 @@ public class JUST
     public static final int LEVEL_TRACE = 6;
     
     public static String libPath = ".";
+    public static String cfgPath = ".";
     public static String logPath = ".";
     public static boolean logOn = true;
     public static int logLevel = LEVEL_DEBUG;
@@ -27,18 +28,18 @@ public class JUST
             if (osArch == null) {
                 System.out.println("Can't get arch info.");
             } else if (osArch.contains("x86")) {
-                System.loadLibrary("libjust_jni-win32-msvc90-mt-gd-1.2.0");
+                System.loadLibrary("libjust_jni-win32-msvc90-mt-gd-1");
             } else if (osArch.contains("mips")) {
-                System.loadLibrary("just_jni-mips-android-gcc44-mt-1.2.0");
+                System.loadLibrary("just_jni-mips-android-gcc44-mt-1");
             } else if (osArch.contains("i386")) {
-                System.loadLibrary("just_jni-linux-x86-gcc44-mt-1.2.0");
+                System.loadLibrary("just_jni-linux-x86-gcc44-mt-1");
             } else if (osArch.contains("amd64")) {
-                System.loadLibrary("just_jni-linux-x64-gcc44-mt-1.2.0");
+                System.loadLibrary("just_jni-linux-x64-gcc44-mt-gd-1");
             } else if (osArch.contains("armv7l")) {
-                System.loadLibrary("just_jni-arm-android-r9-gcc46-mt-1.2.0");
+                System.loadLibrary("just_jni-arm-android-r9-gcc46-mt-1");
             } else if (osArch.contains("arm")) {
                 System.out.println(osArch);
-                System.loadLibrary("just_jni-arm-android-r9-gcc46-mt-1.2.0");
+                System.loadLibrary("just_jni-arm-android-r9-gcc46-mt-1");
             } else {
                 System.out.println("Arch " + osArch + " not supported.");
            }
@@ -148,6 +149,9 @@ public class JUST
     public static void main(String[] argv)
     {
     	load();
+        SetConfig("trip", "trip.client.UdpManager", "uid", "25e5a06d29804f83a71207872500df0b");
+        System.out.println(GetConfig(null, "just", "libname"));
+        System.out.println(GetConfig("trip", "trip.client.Bootstrap", "url"));
         StartEngine(argv[0], argv[1], argv[2]);
         StopEngine();
     }

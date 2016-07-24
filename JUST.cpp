@@ -101,10 +101,12 @@ extern "C" JNIEXPORT jint JNICALL JNI_OnLoad(
     JniClass clsMediaSdk(env, "com/just/sdk/JUST");
 
     string_holder libPath = clsMediaSdk.static_field_cvalue<JString>("libPath");
+    string_holder cfgPath = clsMediaSdk.static_field_cvalue<JString>("cfgPath");
     string_holder logPath = clsMediaSdk.static_field_cvalue<JString>("logPath");
     bool logOn = g_logOn = clsMediaSdk.static_field_cvalue<JBoolean>("logOn");
 
     LOG(3, "libPath = %s", libPath.c_str());
+    LOG(3, "cfgPath = %s", cfgPath.c_str());
     LOG(3, "logPath = %s", logPath.c_str());
     LOG(3, "logOn = %s", logOn ? "true" : "false");
 
@@ -121,6 +123,7 @@ extern "C" JNIEXPORT jint JNICALL JNI_OnLoad(
     }
 
     setenv("TMPDIR", logPath, 1);
+    setenv("LD_CONFIG_PATH", cfgPath, 1);
 
     char strlib[1024] = {0};
     char const * path = libPath;
