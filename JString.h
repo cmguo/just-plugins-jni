@@ -118,9 +118,10 @@ struct Value<JString, char const *>
         jbyteArray arr = (jbyteArray) env->CallObjectMethod(j_, mtd, enc);
         jsize len = env->GetArrayLength(arr);
         jbyte * bytes = env->GetByteArrayElements(arr, NULL);
-        char * p = (char *)malloc(len + 2);
+        char * p = new char[len+2];
         memcpy(p + 1, bytes, len);
         p[len + 1] = 0;
+        p[0] = 0;
         c_ = p;
         env->ReleaseByteArrayElements(arr, bytes, 0);
         env->DeleteLocalRef(cls);
