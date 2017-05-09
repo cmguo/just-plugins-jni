@@ -16,6 +16,7 @@ public class JUST
     public static String libPath = ".";
     public static String cfgPath = ".";
     public static String logPath = ".";
+    public static String libName = "libjust-arm-android-r9-gcc46-mt-gd-1-default.so"; //default
     public static boolean logOn = true;
     public static int logLevel = LEVEL_DEBUG;
 

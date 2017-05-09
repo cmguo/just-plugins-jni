@@ -103,6 +103,7 @@ extern "C" JNIEXPORT jint JNICALL JNI_OnLoad(
     string_holder libPath = clsMediaSdk.static_field_cvalue<JString>("libPath");
     string_holder cfgPath = clsMediaSdk.static_field_cvalue<JString>("cfgPath");
     string_holder logPath = clsMediaSdk.static_field_cvalue<JString>("logPath");
+    string_holder libName = clsMediaSdk.static_field_cvalue<JString>("libName");
     bool logOn = g_logOn = clsMediaSdk.static_field_cvalue<JBoolean>("logOn");
 
     LOG(3, "libPath = %s", libPath.c_str());
@@ -132,7 +133,7 @@ extern "C" JNIEXPORT jint JNICALL JNI_OnLoad(
     while (path) {
         strncpy(strlib, path, MIN(clone - path, sizeof(strlib)));
         strncat(strlib, "/", sizeof(strlib));
-        strncat(strlib, JUST_LIB_NAME, sizeof(strlib));
+        strncat(strlib, libName, sizeof(strlib));
         LOG(3, "JUST_Load(%s)", strlib);
         if (JUST_Load(strlib)) {
             break;
