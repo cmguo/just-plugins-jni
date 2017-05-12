@@ -107,6 +107,7 @@ extern "C" JNIEXPORT jint JNICALL JNI_OnLoad(
     bool logOn = g_logOn = clsMediaSdk.static_field_cvalue<JBoolean>("logOn");
 
     LOG(3, "libPath = %s", libPath.c_str());
+    LOG(3, "libName = %s", libName.c_str());
     LOG(3, "cfgPath = %s", cfgPath.c_str());
     LOG(3, "logPath = %s", logPath.c_str());
     LOG(3, "logOn = %s", logOn ? "true" : "false");
@@ -128,22 +129,28 @@ extern "C" JNIEXPORT jint JNICALL JNI_OnLoad(
 
     char strlib[1024] = {0};
     char const * path = libPath;
-    char const * clone = strchr(path, ':');
+    char const * name = libName;
+    if (name == NULL)
+        name = JUST_LIB_NAME;
 #define MIN(x, y) (x) < (y) ? (x) : (y)
-    while (path) {
-        strncpy(strlib, path, MIN(clone - path, sizeof(strlib)));
+    while (path && path[0]) {
+        char const * clone = strchr(path, ':');
+        memset(strlib, 0, sizeof(strlib));
+        if (clone)
+            strncpy(strlib, path, MIN(clone - path, sizeof(strlib)));
+        else
+            strncpy(strlib, path, sizeof(strlib));
         strncat(strlib, "/", sizeof(strlib));
-        strncat(strlib, libName, sizeof(strlib));
+        strncat(strlib, name, sizeof(strlib));
         LOG(3, "JUST_Load(%s)", strlib);
         if (JUST_Load(strlib)) {
             break;
         }
         LOG(3, "JUST_Load failed: %s", strerror(errno));
         path = clone ? clone + 1 : NULL;
-        clone = strchr(path, ':');
     }
     // Use default search
-    if (JUST_Load() == NULL) {
+    if (JUST_Load(name) == NULL) {
         return JNI_ERR;
     }
 
