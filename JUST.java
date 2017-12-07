@@ -63,7 +63,7 @@ public class JUST
 
     public interface CallBack
     {
-    	boolean invoke(long context, int err);
+    	void invoke(long context, int err);
     };
     
     public static class DownloadStatistic
