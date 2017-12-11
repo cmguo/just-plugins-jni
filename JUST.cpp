@@ -162,7 +162,7 @@ extern "C" JNIEXPORT jint JNICALL JNI_OnLoad(
         JUST_SetLogHook(Just_OnLogDump, logLevel);
     }
 
-    //JUST_RedirectCallback(just_redirect_callback, just_free_callback, clsMediaSdk.get_class());
+    JUST_RedirectCallback(just_redirect_callback, just_free_callback, clsMediaSdk.get_class());
 
     LOG(3, "[JNI_OnLoad] finish");
 
