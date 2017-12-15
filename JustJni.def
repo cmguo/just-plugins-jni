@@ -18,6 +18,8 @@ EXPORTS
 	Java_com_just_sdk_JUST_DownloadClose             PRIVATE
 	Java_com_just_sdk_JUST_DownloadOpen              PRIVATE
 	Java_com_just_sdk_JUST_GetDownloadInfo           PRIVATE
+	Java_com_just_sdk_JUST_DownloadStart             PRIVATE
+	Java_com_just_sdk_JUST_DownloadCancel            PRIVATE
 	Java_com_just_sdk_JUST_GetDuration               PRIVATE
 	Java_com_just_sdk_JUST_GetLastError              PRIVATE
 	Java_com_just_sdk_JUST_GetLastErrorMsg           PRIVATE

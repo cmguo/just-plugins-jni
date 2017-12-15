@@ -81,7 +81,11 @@ public class JUST
 
     public native static long DownloadOpen(String playlink, String format, String save_filename, CallBack callback);
 
-    public native static void DownloadClose(long handle);
+    public native static void DownloadStart(long handle, long start, long end, CallBack callback);
+
+    public native static long DownloadClose(long handle);
+
+    public native static long DownloadCancel(long handle);
 
     public native static long GetDownloadInfo(long handle, DownloadStatistic stat);
 
