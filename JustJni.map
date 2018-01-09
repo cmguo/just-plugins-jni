@@ -13,6 +13,7 @@
 
 		Java_com_just_sdk_JUST_DownloadOpen;
 		Java_com_just_sdk_JUST_DownloadClose;
+		Java_com_just_sdk_JUST_DownloadCreate;
 		Java_com_just_sdk_JUST_DownloadStart;
 		Java_com_just_sdk_JUST_DownloadCancel;
 		Java_com_just_sdk_JUST_GetDownloadInfo;	
